@@ -49,7 +49,7 @@ namespace WebApiCoDi.Models
                 configurationDetails.dv = "0";//?
                 configurationDetails.keysource = "wEKUWCDoxclpAAns+muEC+ssjEc2CXsGcAIxuy7VqShW2rQ8IbJqLIKLJpjNgmBlyRxHefUTW1FajrwoD7Hb1DslLxDd1hsHlmepEJg2S2VhtZwfiGz0Wh1HbDgoUFPVgH4YdJv4rgzp6CuNLB+VTCtS/ZYqWe3wxDjziDCa80Gm6ZideNnJAZnG1nxY3wEOrxIi2QL/fXuTIPKrqE2NDhGEGG9axxuFTHqYEuERroDx+DSdbs+S35x4BjZBitjxw/EQ3K83y8+he2wK6AD7OQmgWBW1Iv5JqllsHCgtbTNNnYKUSLXp4cefT/S6lWGz4KzD1IFp7i0b4DXbuJR9Ag==";//?
                 configurationDetails.responseType = "IMAGE";
-                configurationDetails.qrSize = "250";
+                configurationDetails.qrSize = "250";//fijo
                 var obj = (new
                 {
                     paymentDetails,
