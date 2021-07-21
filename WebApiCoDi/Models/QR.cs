@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using WebApiCoDi.GeneracionCodigo.Peticion;
@@ -14,42 +13,50 @@ using WebApiCoDi.GeneracionCodigo.Respuesta;
 using WebApiCoDi.Models.Prueba;
 using WebApiCoDi.Capas.Helpers;
 using System.Text.Json;
+using NLog;
 
 namespace WebApiCoDi.Models
 {
     public class QR
     {
+        private static Logger log = LogManager.GetCurrentClassLogger();
         public static CuerpoRespuesta GenerarQRDatosBase(CuerpoPeticion cuerpoPeticion)
         {
             try
             {
+                //Se obtiene el actual epoch time del sistema
+                var epochTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                //Se agrega tiempo de expiración representado en mili-segundos
+                var fechaExpiracion = epochTime + DatosHelper.LeerTiempoExpiracion();
                 Configuracion config = new Configuracion();
                 List<Cabecera> cabecer = new List<Cabecera>();
 
                 BaseDatos bas = new BaseDatos();
-                cabecer = CabeceraHelper.LeerDatosCabecera();
-                //armar objeto para serializar en string
-
+                cabecer = DatosHelper.LeerDatosCabecera();
+                
+                //Armar objeto para serializar en string
                 PaymentDetail paymentDetails = new PaymentDetail();
                 paymentDetails.des = cuerpoPeticion.referencia;
                 paymentDetails.amo = cuerpoPeticion.monto.ToString();
-                paymentDetails.com = "2";//fijo
-                paymentDetails.@ref = "30";//fijo
+                paymentDetails.com = DatosHelper.LeerDetalle(Constantes.DETALLE_COM);//fijo
+                paymentDetails.@ref = DatosHelper.LeerDetalle(Constantes.DETALLE_REF);//fijo
+                
                 paymentDetails.v = new GeneracionCodigo.PeticionCodi.V();
-                paymentDetails.v.nam = "Israel de Jesus Morales Vargas";//?
-                paymentDetails.v.acc = "021180060001000993";//?
-                paymentDetails.v.ban = "40021";//fijo
-                paymentDetails.v.tyc = "40";//fijo
+                paymentDetails.v.nam = DatosHelper.LeerDetalle(Constantes.DETALLE_NAM);//?
+                paymentDetails.v.acc = DatosHelper.LeerDetalle(Constantes.DETALLE_ACC);//?
+                paymentDetails.v.ban = DatosHelper.LeerDetalle(Constantes.DETALLE_BAN);//fijo
+                paymentDetails.v.tyc = DatosHelper.LeerDetalle(Constantes.DETALLE_TYC);//fijo
+                
                 paymentDetails.paymentType = new PaymentType();
-                paymentDetails.paymentType.typ = "20";//fijo
-                paymentDetails.paymentType.mdt = "1627666886000";//fecha expiración
+                paymentDetails.paymentType.typ = DatosHelper.LeerDetalle(Constantes.DETALLE_TYP);//fijo
+                paymentDetails.paymentType.mdt = fechaExpiracion.ToString();//fecha expiración
 
                 ConfigurationDetail configurationDetails = new ConfigurationDetail();
-                configurationDetails.alias = "00000161803561217853";//?
-                configurationDetails.dv = "0";//?
-                configurationDetails.keysource = "wEKUWCDoxclpAAns+muEC+ssjEc2CXsGcAIxuy7VqShW2rQ8IbJqLIKLJpjNgmBlyRxHefUTW1FajrwoD7Hb1DslLxDd1hsHlmepEJg2S2VhtZwfiGz0Wh1HbDgoUFPVgH4YdJv4rgzp6CuNLB+VTCtS/ZYqWe3wxDjziDCa80Gm6ZideNnJAZnG1nxY3wEOrxIi2QL/fXuTIPKrqE2NDhGEGG9axxuFTHqYEuERroDx+DSdbs+S35x4BjZBitjxw/EQ3K83y8+he2wK6AD7OQmgWBW1Iv5JqllsHCgtbTNNnYKUSLXp4cefT/S6lWGz4KzD1IFp7i0b4DXbuJR9Ag==";//?
-                configurationDetails.responseType = "IMAGE";
-                configurationDetails.qrSize = "250";//fijo
+                configurationDetails.alias = DatosHelper.LeerDetalle(Constantes.DETALLE_ALIAS);//?
+                configurationDetails.dv = DatosHelper.LeerDetalle(Constantes.DETALLE_DV);//?
+                configurationDetails.keysource = DatosHelper.LeerDetalle(Constantes.DETALLE_KEYSOURCE);//?
+                configurationDetails.responseType = DatosHelper.LeerDetalle(Constantes.DETALLE_RESPONSE_TYPE);
+                configurationDetails.qrSize = DatosHelper.LeerDetalle(Constantes.DETALLE_QR_SIZE);//fijo
                 var obj = (new
                 {
                     paymentDetails,
@@ -58,10 +65,8 @@ namespace WebApiCoDi.Models
                 JsonSerializerOptions jso = new JsonSerializerOptions();
                 jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
                 var cadena = System.Text.Json.JsonSerializer.Serialize(obj, jso);
-                Console.WriteLine(cadena);
+                
                 config = bas.ConsultarConfiguracion();
-                //cabecer = bas.ConsultarCabeceras();
-
 
                 string url = config.url;
 
@@ -118,6 +123,7 @@ namespace WebApiCoDi.Models
             }
             catch (System.Exception ex)
             {
+                log.Error("Ocurrió un error: " + ex.Message);
                 string err = "";
                 err = ex.Message;
 
@@ -243,6 +249,7 @@ namespace WebApiCoDi.Models
             }
             catch (System.Exception ex)
             {
+                log.Error("Ocurrió un error: " + ex.Message);
                 string err = "";
                 err = ex.Message;
 

@@ -8,8 +8,12 @@ using WebApiCoDi.Models.Prueba;
 
 namespace WebApiCoDi.Capas.Helpers
 {
-    public static class CabeceraHelper
+    public static class DatosHelper
     {
+        /// <summary>
+        /// Método que lee del archivo appsettings.json datos para el cabecero HSBC
+        /// </summary>
+        /// <returns>Retorna una lista de de objetos Cabecera</returns>
         public static List<Cabecera> LeerDatosCabecera() {
             
             List<Cabecera> cabeceras = new List<Cabecera>();
@@ -33,6 +37,22 @@ namespace WebApiCoDi.Capas.Helpers
             cabeceras.Add(new Cabecera(Constantes.Content_Type, configuation.GetSection("Codi").GetSection("Cabecera").GetSection(Constantes.Content_Type).Value.ToString())); 
             
             return cabeceras;
+        }
+
+        /// <summary>
+        /// Se obtiene el tiempo de expiracion en días
+        /// </summary>
+        /// <returns>Retorna el numero de días que tendrá de vigencia representado en segundos</returns>
+        public static int LeerTiempoExpiracion() {
+            var configuation = GetConfiguration();
+
+            return Int32.Parse(configuation.GetSection("Codi").GetSection("Expiracion").GetSection(Constantes.TiempoExpiracionDias).Value.ToString()) * Constantes.TIEMPO_1_DIA_EN_MILISEGUNDOS;
+
+        }
+
+        public static string LeerDetalle(string sec) {
+            var configuation = GetConfiguration();
+            return configuation.GetSection("Codi").GetSection("Detalle").GetSection(sec).Value.ToString();
         }
 
         private static IConfigurationRoot GetConfiguration()

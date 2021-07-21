@@ -22,5 +22,27 @@ namespace WebApiCoDi.Capas.Helpers
         public const string Client_ip_adress = "Client_ip_adress";
         public const string Cache_Control = "Cache-Control";
         public const string Content_Type = "Content-Type";
+        public const string TiempoExpiracionDias = "TiempoExpiracionDias";
+
+
+        public const int TIEMPO_1_HORA_EN_SEGUNDOS = 3600;
+        public const int TIEMPO_1_DIA_EN_MILISEGUNDOS = 86400000;
+        public const int TIEMPO_1_SEMANA_EN_SEGUNDOS = 604800;
+        public const int TIEMPO_1_MES_EN_SEGUNDOS = 2629743;
+        public const int TIEMPO_1_ANIO_EN_SEGUNDOS = 31556926;
+        
+        public const string DETALLE_COM = "com";
+        public const string DETALLE_REF = "ref";
+        public const string DETALLE_NAM = "v_nam";
+        public const string DETALLE_ACC = "v_acc";
+        public const string DETALLE_BAN = "v_ban";
+        public const string DETALLE_TYC = "v_tyc";
+        public const string DETALLE_TYP = "pt_typ";
+        public const string DETALLE_ALIAS = "c_alias";
+        public const string DETALLE_DV = "c_dv";
+        public const string DETALLE_KEYSOURCE = "c_keysource";
+        public const string DETALLE_RESPONSE_TYPE = "c_responseType";
+        public const string DETALLE_QR_SIZE = "c_qrSize";
+        
     }
 }
