@@ -27,11 +27,9 @@ namespace WebApiCoDi.Models
                 //Se obtiene el actual epoch time del sistema
                 var epochTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 //Se agrega tiempo de expiración representado en mili-segundos
-                var fechaExpiracion = epochTime + DatosHelper.LeerTiempoExpiracion();
-                Configuracion config = new Configuracion();
+                var fechaExpiracion = epochTime + DatosHelper.LeerTiempoExpiracion();                
                 List<Cabecera> cabecer = new List<Cabecera>();
-
-                BaseDatos bas = new BaseDatos();
+               
                 cabecer = DatosHelper.LeerDatosCabecera();
                 
                 //Armar objeto para serializar en string
@@ -62,22 +60,27 @@ namespace WebApiCoDi.Models
                     paymentDetails,
                     configurationDetails
                 });
+                
+                var cadena = System.Text.Json.JsonSerializer.Serialize(obj);
+                log.Info("JSON SIN-OPCIONES: " + cadena);
+
                 JsonSerializerOptions jso = new JsonSerializerOptions();
                 jso.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-                var cadena = System.Text.Json.JsonSerializer.Serialize(obj, jso);
+                cadena = System.Text.Json.JsonSerializer.Serialize(obj, jso);
+                log.Info("JSON CON-OPCIONES: " + cadena);
+
+                //Tomar URL (appsettings.json) y JSON (dinamico)
+                Configuracion config = new Configuracion();
+                config.url = DatosHelper.LeerServicio("url");
+                config.cuerpoPeticionJson = cadena;
                 
-                config = bas.ConsultarConfiguracion();
-
-                string url = config.url;
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(config.url);
                 request.Method = "POST";
 
                 foreach (var cab in cabecer)
                 {
                     request.Headers.Add(cab.clave, cab.valor);
                 }
-
 
                 byte[] postBytes = Encoding.UTF8.GetBytes(config.cuerpoPeticionJson);
 
@@ -99,6 +102,7 @@ namespace WebApiCoDi.Models
                 using (StreamReader rdr = new StreamReader(response.GetResponseStream()))
                 {
                     result = rdr.ReadToEnd();
+                    log.Info("result: " + result);
                     CuerpoRespuestaCodi respuesta = JsonConvert.DeserializeObject<CuerpoRespuestaCodi>(Convert.ToString(result));
                     if (respuesta.returnCodes.returnCode == "00")
                     {

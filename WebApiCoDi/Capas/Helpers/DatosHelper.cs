@@ -55,6 +55,12 @@ namespace WebApiCoDi.Capas.Helpers
             return configuation.GetSection("Codi").GetSection("Detalle").GetSection(sec).Value.ToString();
         }
 
+        public static string LeerServicio(string sec)
+        {
+            var configuation = GetConfiguration();
+            return configuation.GetSection("Codi").GetSection("Servicio").GetSection(sec).Value.ToString();
+        }
+
         private static IConfigurationRoot GetConfiguration()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
