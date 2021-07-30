@@ -21,6 +21,7 @@ using WebApiCoDi.Models;
 
 namespace WebApiCoDi.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UsuariosApiCodiController : Controller
     {
         private readonly SoftCreditoContext _context;

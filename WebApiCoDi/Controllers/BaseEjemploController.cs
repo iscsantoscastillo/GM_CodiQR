@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace WebApiCoDi.Controllers
 {
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     public class BaseEjemploController : ControllerBase
     {

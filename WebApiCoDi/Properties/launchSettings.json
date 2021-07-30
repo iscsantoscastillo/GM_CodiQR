@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/BaseEjemplo",
+      "launchUrl": "api/Codi",
       "environmentVariables": {
         "key_Ambiente": "Q3VhbHF1aWVyVGVjbm9sb2fDrWFTdWZpY2llbnRlbWVudGVBdmFuemFkYUVzRXF1aXZhbGVudGVBTGFNYWdpYS1BcGlHTTIwMjA=",
         "ASPNETCORE_ENVIRONMENT": "Development"

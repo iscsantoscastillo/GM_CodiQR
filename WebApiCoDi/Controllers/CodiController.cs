@@ -6,10 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using WebApiCoDi.GeneracionCodigo.Peticion;
 using WebApiCoDi.GeneracionCodigo.Respuesta;
 using WebApiCoDi.Models;
+using WebApiCoDi.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,15 +22,24 @@ namespace WebApiCoDi.Controllers
 
     public class CodiController : ControllerBase
     {
+        private ISolicitudService _iSolicitudService;
+        public CodiController(ISolicitudService solicitudService)
+        {
+            this._iSolicitudService = solicitudService;
+        }
         // GET: api/<CodiController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<string> GetVersion()
         {
-            return new string[] { "Api Codi" };
+            var version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
+            return new string[] { "UsuariosApi V. " + version };
+
         }
 
         // GET api/<CodiController>/5
         [HttpGet("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public string Get(int id)
         {
             return "value";
@@ -36,6 +47,7 @@ namespace WebApiCoDi.Controllers
 
         // POST api/<CodiController>
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -44,6 +56,10 @@ namespace WebApiCoDi.Controllers
             try
             {
                 objPeticion.ValidarPropiedades();
+                //Se valida que exista la referencia (clave de solicitud)
+                if (!_iSolicitudService.existeSolicitud(objPeticion.referencia)) {
+                    throw new Exception("La referencia no es válida");
+                }
                 return Ok(QR.GenerarQRDatosBase(objPeticion));
 
                 //return Ok(QR.GenerarQR(objPeticion));
@@ -110,12 +126,14 @@ namespace WebApiCoDi.Controllers
 
         // PUT api/<CodiController>/5
         [HttpPut("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public void Put(int id, [FromBody] string value)
         {
         }
 
         // DELETE api/<CodiController>/5
         [HttpDelete("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public void Delete(int id)
         {
         }

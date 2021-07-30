@@ -16,6 +16,13 @@ namespace WebApiCoDi.Capas.AD
             return con;
         }
 
+        public string cnCadena(string basedatos)
+        {
+            var configuation = GetConfiguration();
+            string con = configuation.GetSection("ConnectionStrings").GetSection(basedatos).Value.ToString();
+            return con;
+        }
+
         public string keyToken()
         {
             var configuation = GetConfiguration();

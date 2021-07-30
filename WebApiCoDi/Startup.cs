@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApiCoDi.Capas.AD.ContextDataBase;
 using WebApiCoDi.Capas.Common;
+using WebApiCoDi.Repository;
+using WebApiCoDi.Service;
 
 namespace WebApiCoDi
 {
@@ -68,6 +70,10 @@ namespace WebApiCoDi
                 };
             });
 
+            //Inyección de dependencias
+            services.AddTransient<ISolicitudService, SolicitudServiceImpl>();
+            services.AddTransient<ISolicitudRepo, SolicitudRepoImpl>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

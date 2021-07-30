@@ -44,5 +44,11 @@ namespace WebApiCoDi.Capas.Helpers
         public const string DETALLE_RESPONSE_TYPE = "c_responseType";
         public const string DETALLE_QR_SIZE = "c_qrSize";
         
+        //Conexiones a Bases de datos
+        public const string BD_SOFT = "ConexionBD";
+        public const string BD_CORP = "ConexionBDCorporativo";
+        public const int ENTERO_CERO = 0;
+        public const int ENTERO_UNO = 1;
+
     }
 }
